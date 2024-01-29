@@ -9,8 +9,8 @@ end
 
 
 function download_file(authToken, fileURL, localPath)
-    local content = github_http_request(file.download_url, authToken)
-    local f = fs.open(localPath..file.name, "w")
+    local content = github_http_request(fileURL, authToken)
+    local f = fs.open(localPath..fileURL, "w")
     f.write(content)
     f.close()
 end
@@ -30,7 +30,7 @@ function download_files(authToken, user, repo, path, branch, localPath)
     for _, file in pairs(result) do
         if file.type == "file" then
             print("Downloading file: "..file.name)
-            download_file(authToken, file, localPath)
+            download_file(authToken, file.download_url, localPath)
         elseif file.type == "dir" then
             print("Listing directory: "..file.name)
             download_files(authToken, user, repo, path.."/"..file.name, branch, localPath..file.name.."/")
