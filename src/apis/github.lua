@@ -1,7 +1,10 @@
 local API_PREFIX = "https://api.github.com/repos/"
 
 function github_http_request(url, authToken)
-    return http.get(url, {Authorization="token "..authToken}).readAll()
+    local response = http.get(url, {Authorization="token "..authToken})
+    local content = response.readAll()
+    response.close()
+    return content
 end
 
 
@@ -21,6 +24,8 @@ function download_files(authToken, user, repo, path, branch, localPath)
     print("------------- "..authToken.." --------------")
 
     local result = json.deserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
+
+    print("LAAAAAAAA: "..authToken)
 
     for _, file in pairs(result) do
         if file.type == "file" then
