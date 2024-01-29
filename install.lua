@@ -5,7 +5,7 @@ local BRANCH = "master"
 local URL = BASE_URL .. "/" .. USER .. "/" .. REPO .. "/" .. BRANCH .. "/"
 
 local dependencies = {
-    "src/apis/github.lua",
+    "/src/apis/github.lua"
 }
 
 local function get_content(url) 
