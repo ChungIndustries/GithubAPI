@@ -1,2 +1,8 @@
+local a = arg[1]
+
+if root == "run" then
+    root = arg[3]
+end
+
 print("--- test.lua ---")
-print(arg[1])
+print(a)
