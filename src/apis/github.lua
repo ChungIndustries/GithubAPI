@@ -2,6 +2,9 @@ local API_PREFIX = "https://api.github.com/repos/"
 
 function github_http_request(url, authToken)
     local response = http.get(url, {Authorization="token "..authToken})
+
+    print("response: "..response)
+
     local content = response.readAll()
     response.close()
     return content
@@ -22,6 +25,8 @@ function download_files(authToken, user, repo, path, branch, localPath)
     localPath = localPath or ("/downloads/"..repo.."/")
 
     print("------------- "..authToken.." --------------")
+
+    print("anal")
 
     local result = json.deserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
