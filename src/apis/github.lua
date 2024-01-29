@@ -1,7 +1,7 @@
 local API_PREFIX = "https://api.github.com/repos/"
 
 function github_http_request(url, authToken)
-    local response = http.get(url, {Authorization="token "..authToken})
+    local response = http.get(url, {Authorization="Bearer "..authToken})
 
     print("response: "..response)
 
