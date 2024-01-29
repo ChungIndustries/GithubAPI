@@ -2,14 +2,13 @@ local BASE_URL = "https://raw.githubusercontent.com"
 local USER = "ChungIndustries"
 local REPO = "GithubAPI"
 local BRANCH = "master"
-local URL = BASE_URL .. "/" .. USER .. "/" .. REPO .. "/" .. BRANCH .. "/"
+local FILE = "src/apis/github.lua"
+local URL = BASE_URL .. "/" .. USER .. "/" .. REPO .. "/" .. BRANCH .. "/" .. FILE
 
-local api_dependencies = {
-    github="/src/apis/github.lua"
-}
 
-local function get_file_name(path)
-    return fs.getName(path)
+local function get_arg(index)
+    local argOffset = arg[1] == "run" and 2 or 0;
+    return arg[index + argOffset]
 end
 
 local function get_content(url) 
@@ -25,14 +24,15 @@ local function write_file(path, content)
     file.close()
 end
 
-local function main()
-    for alias, dependency in pairs(api_dependencies) do
-        local content = get_content(URL..dependency)
-        local file_path = REPO .. "/" .. get_file_name(dependency)
-        write_file(file_path, content)
-        os.loadAPI(file_path)
-        shell.setAlias(alias, file_path)
-    end
+local function main(authtoken, root)
+    local temp_path = root.."/".."github.lua"
+    write_file(temp_path, get_content(URL))
+    os.loadAPI(temp_path)
+
+    github.download_repo(authtoken, "ChungIndustries", "GithubAPI", "master", root.."/GithubAPI/")
+
+    os.unloadAPI(temp_path)
+    fs.delete(temp_path)
 end
 
-main()
+main(get_arg(1), "")
