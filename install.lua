@@ -35,4 +35,7 @@ local function main(authtoken, root)
     fs.delete(temp_path)
 end
 
+print("token: "..get_arg(1))
 main(get_arg(1), "")
+
+-- e51b8d965d710e984d11148eed4922394c89d188
