@@ -5,7 +5,7 @@ local BRANCH = "master"
 local URL = BASE_URL .. "/" .. USER .. "/" .. REPO .. "/" .. BRANCH .. "/"
 
 local api_dependencies = {
-    "/src/apis/github.lua"
+    github="/src/apis/github.lua"
 }
 
 local function get_file_name(path)
@@ -26,11 +26,12 @@ local function write_file(path, content)
 end
 
 local function main()
-    for _, dependency in pairs(api_dependencies) do
+    for alias, dependency in pairs(api_dependencies) do
         local content = get_content(URL..dependency)
         local file_path = REPO .. "/" .. get_file_name(dependency)
         write_file(file_path, content)
         os.loadAPI(file_path)
+        shell.setAlias(alias, file_path)
     end
 end
 
