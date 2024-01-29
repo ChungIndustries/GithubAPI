@@ -29,7 +29,6 @@ local function main(authtoken, root)
     write_file(temp_path, get_content(URL))
     os.loadAPI(temp_path)
 
-    print("insidee token: "..authtoken)
     github.download_repo(authtoken, "ChungIndustries", "GithubAPI", "master", root.."/GithubAPI/")
 
     os.unloadAPI(temp_path)
