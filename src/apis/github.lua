@@ -18,9 +18,11 @@ function download_files(authToken, user, repo, path, branch, localPath)
     branch = branch or "main"
     localPath = localPath or ("/downloads/"..repo.."/")
 
+    print("------------- "..authToken.." --------------")
+
     local result = json.deserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
-    for i, file in pairs(result) do
+    for _, file in pairs(result) do
         if file.type == "file" then
             print("Downloading file: "..file.name)
             download_file(authToken, file, localPath)
