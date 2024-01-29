@@ -28,9 +28,9 @@ end
 local function main()
     for _, dependency in pairs(api_dependencies) do
         local content = get_content(URL..dependency)
-        local file_path = REPO .. "/" ..get_file_name(dependency)
+        local file_path = REPO .. "/" .. get_file_name(dependency)
         write_file(file_path, content)
-        os.load(file_path)
+        os.loadAPI(file_path)
     end
 end
 
