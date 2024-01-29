@@ -29,13 +29,11 @@ local function main(authtoken, root)
     write_file(temp_path, get_content(URL))
     os.loadAPI(temp_path)
 
+    print("insidee token: "..authtoken)
     github.download_repo(authtoken, "ChungIndustries", "GithubAPI", "master", root.."/GithubAPI/")
 
     os.unloadAPI(temp_path)
     fs.delete(temp_path)
 end
 
-print("token: "..get_arg(1))
 main(get_arg(1), "")
-
--- e51b8d965d710e984d11148eed4922394c89d188
