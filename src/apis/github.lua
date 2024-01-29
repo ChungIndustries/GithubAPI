@@ -18,7 +18,7 @@ function download_files(authToken, user, repo, path, branch, localPath)
     branch = branch or "main"
     localPath = localPath or ("/downloads/"..repo.."/")
 
-    local result = textuils.unserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
+    local result = json.unserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
     for i, file in pairs(result) do
         if file.type == "file" then
