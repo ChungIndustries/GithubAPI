@@ -1,4 +1,4 @@
-API_PREFIX = "https://api.github.com/repos/"
+local API_PREFIX = "https://api.github.com/repos/"
 
 function github_http_request(url, authToken)
     return http.get(url, {Authorization="token "..authToken}).readAll()
