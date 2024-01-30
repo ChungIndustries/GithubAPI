@@ -34,7 +34,7 @@ function download_files(authToken, user, repo, path, branch, localPath)
     branch = branch or "main"
     localPath = localPath or ("/downloads/"..repo.."/")
 
-    local result = json.deserialize(get_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
+    local result = json.decode(get_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
     print("LAAAAAAAA: "..authToken)
 
