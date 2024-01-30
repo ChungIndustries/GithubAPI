@@ -1,7 +1,14 @@
 local API_PREFIX = "https://api.github.com/repos/"
 
-function get_request(url, authToken)
-    local response = http.get(url, {Authorization="Bearer "..authToken})
+local function get_url(user, repo, branch, path)
+    branch = branch or "main"
+    path = path or ""
+    return API_PREFIX..user.."/"..repo.."/"..path.."?ref="..branch
+end
+
+
+function get_request(url, auth_token)
+    local response = http.get(url, {Authorization="Bearer "..auth_token})
 
     if response == nil then
         print("Bad HTTP Response: "..url)
@@ -21,45 +28,45 @@ function get_request(url, authToken)
 end
 
 
-function download_file(authToken, download_url, localPath)
-    local content = get_request(download_url, authToken)
-    local f = fs.open(localPath, "w")
+function download_file(auth_token, download_url, local_path)
+    local content = get_request(download_url, auth_token)
+    local f = fs.open(local_path, "w")
     f.write(content)
     f.close()
 end
 
 
-function download_files(authToken, user, repo, branch, path, localPath)
+function download_files(auth_token, user, repo, branch, path, local_path)
     path = path or ""
     branch = branch or "main"
-    localPath = localPath or ("/downloads/"..repo.."/")
+    local_path = local_path or ("/downloads/"..repo.."/")
 
-    local result = json.decode(get_request(API_PREFIX..user.."/"..repo.."/contents/"..path.."?ref="..branch, authToken))
+    local result = json.decode(get_request(get_url(user, repo, branch, "contents/"..path), auth_token))
 
     for _, file in pairs(result) do
         if file.type == "file" then
             print("Downloading: "..file.path)
-            download_file(authToken, file.download_url, localPath..file.name)
+            download_file(auth_token, file.download_url, local_path..file.name)
         elseif file.type == "dir" then
-            download_files(authToken, user, repo, branch, file.path, localPath..file.name.."/")
+            download_files(auth_token, user, repo, branch, file.path, local_path..file.name.."/")
         end
     end
 end
 
 
-function download_repo(authToken, user, repo, branch, localPath)
+function download_repo(auth_token, user, repo, branch, local_path)
     print("Connecting to Github...")
-    download_files(authToken, user, repo, branch, "", localPath)
+    download_files(auth_token, user, repo, branch, "", local_path)
     print("Download complete!")
 end
 
 
-function get_latest_commit(authToken, user, repo)
-    return json.decode(get_request(API_PREFIX..user.."/"..repo.."/commits", authToken))[1]
+function get_latest_commit(auth_token, user, repo, branch)
+    return json.decode(get_request(get_url(user, repo, branch, "commits"), auth_token))[1]
 end
 
 
-function check_for_updates(authToken, user, repo, lastUpdate)
-    local latestCommit = get_latest_commit(authToken, user, repo)
-    return latestCommit.commit.committer.date ~= lastUpdate
+function check_for_updates(auth_token, user, repo, branch, last_updated)
+    local latestCommit = get_latest_commit(auth_token, user, repo, branch)
+    return latestCommit.commit.committer.date ~= last_updated
 end
