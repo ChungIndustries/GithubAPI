@@ -25,6 +25,8 @@ local function write_file(path, content)
 end
 
 local function main(authtoken, root)
+    root = root or ""
+
     local temp_path = root.."/".."github.lua"
     write_file(temp_path, get_content(URL))
     os.loadAPI(temp_path)
@@ -35,4 +37,4 @@ local function main(authtoken, root)
     fs.delete(temp_path)
 end
 
-main(get_arg(1), "")
+main(get_arg(1), get_arg(2))
