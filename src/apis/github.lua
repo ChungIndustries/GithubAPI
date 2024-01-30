@@ -21,9 +21,9 @@ function get_request(url, authToken)
 end
 
 
-function download_file(authToken, fileURL, localPath)
-    local content = get_request(fileURL, authToken)
-    local f = fs.open(localPath..fileURL, "w")
+function download_file(authToken, download_url, localPath)
+    local content = get_request(download_url, authToken)
+    local f = fs.open(localPath, "w")
     f.write(content)
     f.close()
 end
@@ -36,14 +36,11 @@ function download_files(authToken, user, repo, path, branch, localPath)
 
     local result = json.decode(get_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
-    print("LAAAAAAAA: "..authToken)
-
     for _, file in pairs(result) do
         if file.type == "file" then
-            print("Downloading file: "..file.name)
+            print("Downloading: "..file.path)
             download_file(authToken, file.download_url, localPath..file.path)
         elseif file.type == "dir" then
-            print("Listing directory: "..file.name)
             download_files(authToken, user, repo, file.path, branch, localPath..file.name.."/")
         end
     end
