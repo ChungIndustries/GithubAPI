@@ -29,7 +29,7 @@ local function main(authtoken, root)
     write_file(temp_path, get_content(URL))
     os.loadAPI(temp_path)
 
-    github.download_repo(authtoken, "ChungIndustries", "GithubAPI", "master", root.."/GithubAPI/")
+    github.download_repo(authtoken, "ChungIndustries", "GithubAPI", "main", root.."/GithubAPI/")
 
     os.unloadAPI(temp_path)
     fs.delete(temp_path)
