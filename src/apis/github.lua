@@ -29,19 +29,19 @@ function download_file(authToken, download_url, localPath)
 end
 
 
-function download_files(authToken, user, repo, path, branch, localPath)
+function download_files(authToken, user, repo, branch, path, localPath)
     path = path or ""
     branch = branch or "main"
     localPath = localPath or ("/downloads/"..repo.."/")
 
-    local result = json.decode(get_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
+    local result = json.decode(get_request(API_PREFIX..user.."/"..repo.."/contents/"..path.."?ref="..branch, authToken))
 
     for _, file in pairs(result) do
         if file.type == "file" then
             print("Downloading: "..file.path)
             download_file(authToken, file.download_url, localPath..file.path)
         elseif file.type == "dir" then
-            download_files(authToken, user, repo, file.path, branch, localPath..file.name.."/")
+            download_files(authToken, user, repo, branch, file.path, localPath..file.name.."/")
         end
     end
 end
@@ -49,7 +49,7 @@ end
 
 function download_repo(authToken, user, repo, branch, localPath)
     print("Connecting to Github...")
-    download_files(authToken, user, repo, "", branch, localPath)
+    download_files(authToken, user, repo, branch, "", localPath)
     print("Download complete!")
 end
 
