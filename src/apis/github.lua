@@ -7,7 +7,7 @@ local function get_url(user, repo, branch, path)
 end
 
 
-function get_request(url, auth_token)
+local function get_request(url, auth_token)
     local response = http.get(url, {Authorization="Bearer "..auth_token})
 
     if response == nil then
