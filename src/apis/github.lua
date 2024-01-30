@@ -28,7 +28,7 @@ function get_request(url, auth_token)
 end
 
 
-function download_file(auth_token, download_url, local_path)
+local function download_file(auth_token, download_url, local_path)
     local content = get_request(download_url, auth_token)
     local f = fs.open(local_path, "w")
     f.write(content)
@@ -36,11 +36,7 @@ function download_file(auth_token, download_url, local_path)
 end
 
 
-function download_files(auth_token, user, repo, branch, path, local_path)
-    path = path or ""
-    branch = branch or "main"
-    local_path = local_path or ("/downloads/"..repo.."/")
-
+local function download_files(auth_token, user, repo, branch, path, local_path)
     local result = json.decode(get_request(get_url(user, repo, branch, "contents/"..path), auth_token))
 
     for _, file in pairs(result) do
@@ -54,10 +50,19 @@ function download_files(auth_token, user, repo, branch, path, local_path)
 end
 
 
-function download_repo(auth_token, user, repo, branch, local_path)
+function download(auth_token, user, repo, branch, path, local_path)
+    branch = branch or "main"
+    path = path or ""
+    local_path = local_path or ("/"..repo.."/")
+
     print("Connecting to Github...")
-    download_files(auth_token, user, repo, branch, "", local_path)
+    download_files(auth_token, user, repo, branch, path, local_path)
     print("Download complete!")
+end
+
+
+function download_repo(auth_token, user, repo, branch, local_path)
+    download(auth_token, user, repo, branch, "", local_path)
 end
 
 
