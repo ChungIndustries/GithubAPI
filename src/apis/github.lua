@@ -1,11 +1,19 @@
 local API_PREFIX = "https://api.github.com/repos/"
 
-function github_http_request(url, authToken)
-    print("url: "..url)
-
+function get_request(url, authToken)
     local response = http.get(url, {Authorization="Bearer "..authToken})
 
-    print("response: "..response)
+    if response == nil then
+        print("Bad HTTP Response: "..url)
+        return
+    end
+
+    local responseCode = response.getResponseCode()
+
+    if responseCode ~= 200 then
+        print("Bad HTTP Response Code: "..responseCode)
+        return
+    end
 
     local content = response.readAll()
     response.close()
@@ -14,7 +22,7 @@ end
 
 
 function download_file(authToken, fileURL, localPath)
-    local content = github_http_request(fileURL, authToken)
+    local content = get_request(fileURL, authToken)
     local f = fs.open(localPath..fileURL, "w")
     f.write(content)
     f.close()
@@ -26,7 +34,7 @@ function download_files(authToken, user, repo, path, branch, localPath)
     branch = branch or "main"
     localPath = localPath or ("/downloads/"..repo.."/")
 
-    local result = json.deserialize(github_http_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
+    local result = json.deserialize(get_request(API_PREFIX..user.."/"..repo.."/contents"..path.."?ref="..branch, authToken))
 
     print("LAAAAAAAA: "..authToken)
 
@@ -50,7 +58,7 @@ end
 
 
 function get_latest_commit(authToken, user, repo)
-    return json.decode(github_http_request(API_PREFIX..user.."/"..repo.."/commits", authToken))[1]
+    return json.decode(get_request(API_PREFIX..user.."/"..repo.."/commits", authToken))[1]
 end
 
 
