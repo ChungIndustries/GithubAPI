@@ -39,7 +39,7 @@ function download_files(authToken, user, repo, branch, path, localPath)
     for _, file in pairs(result) do
         if file.type == "file" then
             print("Downloading: "..file.path)
-            download_file(authToken, file.download_url, localPath..file.path)
+            download_file(authToken, file.download_url, localPath..file.name)
         elseif file.type == "dir" then
             download_files(authToken, user, repo, branch, file.path, localPath..file.name.."/")
         end
