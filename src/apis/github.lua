@@ -1,6 +1,6 @@
 local API_PREFIX = "https://api.github.com/repos/"
 
-local function get_url(user, repo, branch, path)
+function get_api_url(user, repo, branch, path)
     branch = branch or "main"
     path = path or ""
     return API_PREFIX..user.."/"..repo.."/"..path.."?ref="..branch
@@ -37,7 +37,7 @@ end
 
 
 local function download_files(auth_token, user, repo, branch, path, local_path)
-    local result = json.decode(get_request(get_url(user, repo, branch, "contents/"..path), auth_token))
+    local result = json.decode(get_request(get_api_url(user, repo, branch, "contents/"..path), auth_token))
 
     for _, file in pairs(result) do
         if file.type == "file" then
@@ -67,7 +67,7 @@ end
 
 
 function get_latest_commit(auth_token, user, repo, branch)
-    return json.decode(get_request(get_url(user, repo, branch, "commits"), auth_token))[1]
+    return json.decode(get_request(get_api_url(user, repo, branch, "commits"), auth_token))[1]
 end
 
 
