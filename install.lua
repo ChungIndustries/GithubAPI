@@ -11,7 +11,7 @@ local function get_arg(index)
     return arg[index + argOffset]
 end
 
-local function get_content(url) 
+local function get_content(url)
     local response = http.get(url)
     local content = response.readAll()
     response.close()
